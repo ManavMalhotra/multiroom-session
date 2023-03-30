@@ -12,6 +12,10 @@
 
   </head>
   <body>
+    <h1>
+      <a href="https://github.com/colyseus/colyseus-examples"><img src="https://cdn.jsdelivr.net/gh/colyseus/colyseus@master/media/header.png" height="100" alt="colyseus" /></a>
+    </h1>
+
     <p>This room doesn't use the room's state. It just broadcast messages through "broadcast" method.</p>
 
     <strong>Messages</strong><br>
@@ -26,10 +30,7 @@
     <script>
       var host = window.document.location.host.replace(/:.*/, '');
 
-      console.log("host:", location.protocol.replace("http", "ws") + "//" + host + (location.port ? ':'+location.port : ''))
-
       var client = new Colyseus.Client(location.protocol.replace("http", "ws") + "//" + host + (location.port ? ':'+location.port : ''));
-
       client.joinOrCreate("chat").then(room => {
         console.log("joined");
         room.onStateChange.once(function(state) {
@@ -38,16 +39,14 @@
 
         // new room state
         room.onStateChange(function(state) {
-            console.log("room state:", state)
+            // this signal is triggered on each patch
         });
 
         // listen to patches coming from the server
-        room.onMessage("message", function(message) {
-            console.log("message:", message)
+        room.onMessage("messages", function(message) {
             var p = document.createElement("p");
             p.innerText = message;
             document.querySelector("#messages").appendChild(p);
-            console.log(p)
         });
 
         // send message to room on submit
@@ -55,10 +54,11 @@
             e.preventDefault();
 
             var input = document.querySelector("#input");
-            // send data to room
-            room.send("message", input.value);
 
             console.log("input:", input.value);
+
+            // send data to room
+            room.send("message", input.value);
 
             // clear input
             input.value = "";

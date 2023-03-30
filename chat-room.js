@@ -1,7 +1,8 @@
-const {Room} = require('colyseus');
+const colyseus = require('colyseus');
 
-class ChatRoom extends Room {
+class ChatRoom extends colyseus.Room {
     // this room supports only 4 clients connected
+
     maxClients = 4;
 
     onCreate (options) {
@@ -9,7 +10,7 @@ class ChatRoom extends Room {
 
         this.onMessage("message", (client, message) => {
             console.log("ChatRoom received message from", client.sessionId, ":", message);
-            this.broadcast("message", `(${client.sessionId}) ${message}`);
+            this.broadcast("messages", `(${client.sessionId}) ${message}`);
         });
     }
 
@@ -24,7 +25,6 @@ class ChatRoom extends Room {
     onDispose () {
         console.log("Dispose ChatRoom");
     }
-
 }
 
 module.exports = ChatRoom;

@@ -9,12 +9,11 @@ const gameServer = new colyseus.Server({ server });
 
 app.use(express.static('public'));
 
-gameServer.define('chat', ChatRoom).enableRealtimeListing();
-
-app.get('/', (req, res) => {
+// Create a new chat room with the specified name
+app.get('/chat/:roomName', (req, res) => {
+    const room = gameServer.define('chat_' + req.params.roomName, ChatRoom);
     res.sendFile(__dirname + '/views/index.html');
-})
-
+});
 
 server.listen(3000, () => {
   console.log('Server listening on port 3000');
